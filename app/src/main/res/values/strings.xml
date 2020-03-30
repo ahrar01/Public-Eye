@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Public Eye</string>
+
+    <string name="phone_number_hint">Phone Number</string>
+    <string name="invalid_phone_number">Invalid Phone Number!</string>
+    <string name="valid_phone_number">Valid Phone Number</string>
+    <string name="send_otp_instruction">Tap Next to verify your account with your phone number. You don\'t need to
+        manualy enter verification code if the number install in this phone...
+    </string>
+    <string name="enter_otp_instruction">Enter the code that was send to</string>
+    <string name="didnt_get_code_instruction">I didn\'t get a code</string>
+    <string name="terms_policy_acceptance_instruction">Tap Continue to accept our Terms,Data Policy, cookie use and the
+        Privacy Policy and Terms of Service...
+    </string>
+    <string name="create_profile_instruction">Congratulation your number is verified click Continue to create your
+        profile
+    </string>
 </resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="phone_verification_steps">
+        <item>Send OTP</item>
+        <item>Verify</item>
+        <item>Done</item>
+    </string-array>
+
+
+</resources>

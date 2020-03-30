@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'org.jetbrains.kotlin.android.extensions'
 
 android {
     compileSdkVersion 29
@@ -23,6 +26,10 @@ android {
         }
     }
 
+    androidExtensions {
+        experimental = true
+    }
+
 }
 
 dependencies {
@@ -34,4 +41,23 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'com.google.android.material:material:1.2.0-alpha01'
+
+
+    //Firebase SDK
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
+    //=====================================================================================
+
+    // Toasty
+    implementation 'com.github.GrenderG:Toasty:1.4.2'
+    //For Step View
+    implementation 'com.shuhart.stepview:stepview:1.5.1'
+    //For PinView EditText
+    implementation 'com.chaos.view:pinview:1.3.2'
+    //For playing .gif images
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
+    // Phone input layout
+    implementation 'net.rimoto:intlphoneinput:1.0.1'
 }

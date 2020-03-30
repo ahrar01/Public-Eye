@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "418339757752",
+    "firebase_url": "https://public-eye-dff97.firebaseio.com",
+    "project_id": "public-eye-dff97",
+    "storage_bucket": "public-eye-dff97.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418339757752:android:7ada1283d6f75eee1a9e4d",
+        "android_client_info": {
+          "package_name": "com.qdesigns.publiceye"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "418339757752-0qkivchkiktfmcqmhs1hi6uegtfnoiva.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.qdesigns.publiceye",
+            "certificate_hash": "7151b74f33b686cba96d953a23d6e1fdb61ab9b9"
+          }
+        },
+        {
+          "client_id": "418339757752-qir8727u0v1aq7ns5jgcl0c1vfda81i2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzZTAoZ8PtmlqImnQ1RT497aJyevbB35k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "418339757752-qir8727u0v1aq7ns5jgcl0c1vfda81i2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
