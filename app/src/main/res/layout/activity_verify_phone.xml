@@ -89,14 +89,13 @@
                 android:textColor="@color/color_grey" />
 
             <Button
-
                 android:id="@+id/activity_send_otp_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="10dp"
-                android:background="@drawable/button_main_background"
+                android:background="@drawable/corner_button_blue"
                 android:text="next"
                 android:textColor="#fff"
                 android:textStyle="bold" />

@@ -31,3 +31,9 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    roomVersion = '2.2.4'
+    archLifecycleVersion = '2.2.0'
+    coroutines = '0.26.1'
+}

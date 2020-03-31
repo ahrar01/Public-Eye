@@ -44,14 +44,38 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.2.0-alpha01'
 
+    //====================================================================================
 
     //Firebase SDK
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics-ktx:17.3.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.2'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
-    //=====================================================================================
 
+    //=====================================================================================
+    // Room components
+    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
+    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
+    androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
+
+    // Lifecycle components
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.archLifecycleVersion"
+    kapt "androidx.lifecycle:lifecycle-compiler:$rootProject.archLifecycleVersion"
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
+    //=====================================================================================
+    // Location
+    implementation "com.google.android.gms:play-services-location:17.0.0"
+
+    //=====================================================================================
     // Toasty
     implementation 'com.github.GrenderG:Toasty:1.4.2'
+    // circle image view
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
     //For Step View
     implementation 'com.shuhart.stepview:stepview:1.5.1'
     //For PinView EditText
@@ -60,4 +84,12 @@ dependencies {
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
     // Phone input layout
     implementation 'net.rimoto:intlphoneinput:1.0.1'
+    //for permission
+    implementation 'com.karumi:dexter:6.0.2'
+    //Crop Image
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'id.zelory:compressor:3.0.0'
+
+    //Lottie
+    implementation 'com.airbnb.android:lottie:3.3.1'
 }
