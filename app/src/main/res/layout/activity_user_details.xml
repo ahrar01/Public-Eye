@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.UserDetails">
+    tools:context=".ui.auth.UserDetails">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/toolbarwrap"
@@ -78,7 +78,7 @@
     </RelativeLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/shop_name_input"
+        android:id="@+id/name_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,11 +99,11 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/owner_name_input"
+        android:id="@+id/anonymous_name_edit_input"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/shop_name_input"
+        android:layout_below="@+id/name_input_layout"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
@@ -119,64 +119,35 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <RelativeLayout
-        android:id="@+id/addressRl"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/address_edit_input_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/owner_name_input"
+        android:layout_below="@+id/anonymous_name_edit_input"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp">
+        app:endIconDrawable="@drawable/ic_my_location"
+        app:endIconMode="custom"
+        app:helperText="*Required">
 
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/address_name_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/profile_details_change_address_btn"
-            android:orientation="vertical">
+            android:hint="Address" />
 
-            <TextView
-                android:id="@+id/delivery_details_address_name_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/store_address_one_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/store_address_two_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/store_landmark_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/profile_details_change_address_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="8dp"
-            android:background="@drawable/ic_my_location"
-            android:textColor="@color/colorPrimary" />
-
-    </RelativeLayout>
 
     <Button
         android:id="@+id/upload_user_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/addressRl"
+        android:layout_below="@+id/address_edit_input_layout"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"

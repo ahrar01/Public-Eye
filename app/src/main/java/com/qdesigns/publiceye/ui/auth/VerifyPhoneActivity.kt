@@ -1,4 +1,4 @@
-package com.qdesigns.publiceye.ui
+package com.qdesigns.publiceye.ui.auth
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import com.qdesigns.publiceye.MainActivity
+import com.qdesigns.publiceye.ui.home.MainActivity
 import com.qdesigns.publiceye.R
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_verify_phone.*

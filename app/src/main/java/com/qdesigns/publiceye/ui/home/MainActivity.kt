@@ -1,9 +1,10 @@
-package com.qdesigns.publiceye
+package com.qdesigns.publiceye.ui.home
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.qdesigns.publiceye.ui.UserDetails
+import com.qdesigns.publiceye.R
+import com.qdesigns.publiceye.ui.auth.UserDetails
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

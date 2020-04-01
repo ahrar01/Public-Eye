@@ -1,4 +1,4 @@
-package com.qdesigns.publiceye.ui
+package com.qdesigns.publiceye.ui.auth
 
 import android.Manifest
 import android.app.Activity
@@ -22,9 +22,9 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.qdesigns.publiceye.MainActivity
 import com.qdesigns.publiceye.R
 import com.qdesigns.publiceye.database.modal.UserInfo
+import com.qdesigns.publiceye.utils.GpsUtils
 import com.qdesigns.publiceye.utils.setProgressDialog
 import com.qdesigns.publiceye.viewmodel.FirestoreViewModel
 import com.theartofdev.edmodo.cropper.CropImage
@@ -47,12 +47,17 @@ class UserDetails : AppCompatActivity() {
     private var thumb_image: Bitmap? = null
     var user = FirebaseAuth.getInstance().currentUser!!
     var firestoreViewModel: FirestoreViewModel? = null
+    private lateinit var gpsUtils: GpsUtils
+
+    var latitutde: Double? = null
+    var longitude: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_details)
-        firestoreViewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
 
+        firestoreViewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
+        gpsUtils = GpsUtils(this)
         setupClickListener()
 
     }
@@ -94,19 +99,56 @@ class UserDetails : AppCompatActivity() {
             //result will be available in onActivityResult which is overridden
         })
 
+        address_edit_input_layout.setEndIconOnClickListener {
+            Toasty.info(this, "location is clicked", Toast.LENGTH_LONG).show()
+
+            gpsUtils.getLatLong { lat, long ->
+                latitutde = lat
+                longitude = long
+                Toasty.info(this, "location is $latitutde + $longitude", Toast.LENGTH_LONG).show()
+
+                Log.d(TAG, "location is $latitutde + $longitude")
+
+            }
+        }
+
         upload_user_btn.setOnClickListener {
 
             val Name = create_name_edit_text.text.toString().trim()
             val anonymousName = anonymous_name_edit_text.text.toString().trim()
 
 
-            if (Validate(Name, anonymousName) && validateProfile()) {
+            if (isFormValid()) {
                 uploadImageAndSaveUri(Name, anonymousName, thumb_image)
             }
 
         }
 
     }
+
+
+    fun isFormValid(): Boolean {
+        if (IMAGE_STATUS == false) {
+            Toasty.info(this, "Select A Profile Picture", Toast.LENGTH_LONG).show()
+            return false
+        }
+        if (create_name_edit_text.text.toString().trim().length == 0) {
+            name_input_layout.error = "Enter Your Name"
+            return false
+        }
+        if (anonymous_name_edit_text.text.toString().trim().length == 0) {
+            anonymous_name_edit_input.error = "Enter Anonymous Name"
+            return false
+        }
+
+        if (latitutde == null || longitude == null) {
+            Toasty.info(this, "Please Click on Location Button", Toast.LENGTH_LONG).show()
+            return false
+        }
+        return true
+
+    }
+
 
     private fun uploadImageAndSaveUri(name: String, anonymousName: String, thumbImage: Bitmap?) {
         val dialog = setProgressDialog(this)
@@ -170,37 +212,10 @@ class UserDetails : AppCompatActivity() {
         }
     }
 
-    private fun validateProfile(): Boolean {
-        if (!IMAGE_STATUS) {
-            Toasty.info(
-                this,
-                "Select A Shop Picture",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-        return IMAGE_STATUS
-    }
-
-    private fun Validate(name: String, anonymousName: String): Boolean {
-        var check = true
-        if (check) {
-            if (name.isEmpty()) {
-                create_name_edit_text.setError("Cannot Be Empty")
-                check = false
-            }
-            if (anonymousName.isEmpty()) {
-                anonymous_name_edit_text.setError("Cannot Be Empty")
-                check = false
-            }
-        } else {
-            check = true
-        }
-        return check
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        gpsUtils.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
             if (data == null) {
                 showError("Failed to open picture!")
