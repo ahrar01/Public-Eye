@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import com.qdesigns.publiceye.ui.home.MainActivity
 import com.qdesigns.publiceye.R
 import es.dmoral.toasty.Toasty
@@ -27,6 +28,11 @@ class VerifyPhoneActivity : AppCompatActivity() {
     private var storedVerificationId: String? = ""
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     var mAuth: FirebaseAuth? = null
+
+    private var flag: Boolean = false
+
+    var firestoreDB = FirebaseFirestore.getInstance()
+    var collectionReference = firestoreDB.collection("users")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -191,11 +197,35 @@ class VerifyPhoneActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     verifiedOtpAction()
 
-                    activity_verify_progress_bar.visibility = View.GONE
+                    val user = task.result?.user
+
+                    val query = collectionReference.whereEqualTo("uid", user!!.uid)
+                    query.get()
+                        .addOnSuccessListener { queryDocumentSnapshots ->
+                            for (documentSnapshot in queryDocumentSnapshots) {
+                                flag = true
+                            }
+                            if (flag) {
+                                activity_verify_progress_bar.visibility = View.GONE
+
+                                val intent = Intent(this, MainActivity::class.java).apply {
+                                    flags =
+                                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                }
+                                startActivity(intent)
+
+                            } else {
+                                activity_verify_progress_bar.visibility = View.GONE
+                                val intent = Intent(this, SaveUserDetails::class.java).apply {
+                                    flags =
+                                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                }
+                                startActivity(intent)
+                            }
+                        }
 
                     Log.d(TAG, "signInWithCredential:success")
 
-                    val user = task.result?.user
                     // ...
                 } else {
                     // Sign in failed, display a message and update the UI

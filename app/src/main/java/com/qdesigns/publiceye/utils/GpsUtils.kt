@@ -3,17 +3,22 @@ package com.qdesigns.publiceye.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.location.Geocoder
 import android.location.LocationManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
+import java.io.IOException
 import java.lang.ref.WeakReference
+import java.util.*
 
 class GpsUtils {
 
-    private val GPS_REQUEST_CODE = 1001
+    private val GPS_REQUEST_CODE = 1000
     private var weakActivity: WeakReference<FragmentActivity>? = null
     private var weakFragment: WeakReference<Fragment>? = null
 
@@ -40,7 +45,7 @@ class GpsUtils {
         locationRequest = LocationRequest.create()
 
         locationRequest.apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            priority = PRIORITY_HIGH_ACCURACY
             interval = (10 * 1000).toLong()
             fastestInterval = (1 * 1000).toLong()
         }
@@ -149,6 +154,35 @@ class GpsUtils {
     }
 
 
+    fun getAddress(activity: AppCompatActivity, lat: Double, lng: Double): String? {
+
+        //Log.d(TAG, "get Address for LAT: $lat  LON: $lng")
+        if (lat == 0.0 && lng == 0.0)
+            return null
+        val geocoder = Geocoder(activity, Locale.getDefault())
+        try {
+            val addresses = geocoder.getFromLocation(lat, lng, 1)
+            val obj = addresses[0]
+            var add = if (obj.thoroughfare == null) "" else obj.thoroughfare + ", "
+
+            add += if (obj.subLocality == null) "" else obj.subLocality + ", "
+            add += if (obj.subAdminArea == null) "" else obj.subAdminArea
+
+
+            //Log.v("aTAG", "Address received: $add")
+
+            return add
+        } catch (e: IOException) {
+
+            e.printStackTrace()
+        }
+
+        return ""
+
+
+    }
+
+
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == GPS_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -162,6 +196,5 @@ class GpsUtils {
     private fun <T> WeakReference<T>.safeGet(body: T.() -> Unit) {
         this.get()?.body()
     }
-
 
 }

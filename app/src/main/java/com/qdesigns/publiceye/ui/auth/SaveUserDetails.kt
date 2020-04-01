@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -24,9 +25,13 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.qdesigns.publiceye.R
 import com.qdesigns.publiceye.database.modal.UserInfo
+import com.qdesigns.publiceye.ui.home.MainActivity
 import com.qdesigns.publiceye.utils.GpsUtils
 import com.qdesigns.publiceye.utils.setProgressDialog
 import com.qdesigns.publiceye.viewmodel.FirestoreViewModel
+import com.rommansabbir.locationlistenerandroid.LocationCallback
+import com.rommansabbir.locationlistenerandroid.LocationListener
+import com.rommansabbir.locationlistenerandroid.PermissionCallback
 import com.theartofdev.edmodo.cropper.CropImage
 import es.dmoral.toasty.Toasty
 import id.zelory.compressor.Compressor
@@ -38,7 +43,7 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-class UserDetails : AppCompatActivity() {
+class SaveUserDetails : AppCompatActivity(), PermissionCallback {
 
     val TAG = "USER_INFO"
 
@@ -47,20 +52,28 @@ class UserDetails : AppCompatActivity() {
     private var thumb_image: Bitmap? = null
     var user = FirebaseAuth.getInstance().currentUser!!
     var firestoreViewModel: FirestoreViewModel? = null
-    private lateinit var gpsUtils: GpsUtils
-
     var latitutde: Double? = null
     var longitude: Double? = null
+
+    var currentAddress: String = ""
+
+    private lateinit var gpsUtils: GpsUtils
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_details)
+        gpsUtils = GpsUtils(this)
+        /**
+         * Set LocationListener component with activity
+         */
+        LocationListener.setComponent(this)
 
         firestoreViewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
-        gpsUtils = GpsUtils(this)
         setupClickListener()
 
     }
+
 
     private fun setupClickListener() {
         selectProfilePic.setOnClickListener(View.OnClickListener { view ->
@@ -74,7 +87,7 @@ class UserDetails : AppCompatActivity() {
                         if (report.areAllPermissionsGranted()) { // do you work now
                             val intent = Intent(Intent.ACTION_GET_CONTENT)
                             intent.type = "image/*"
-                            startActivityForResult(intent, 1000)
+                            startActivityForResult(intent, 1001)
                         }
                         // check for permanent denial of any permission
                         if (report.isAnyPermissionPermanentlyDenied) { // permission is denied permenantly, navigate user to app settings
@@ -100,23 +113,32 @@ class UserDetails : AppCompatActivity() {
         })
 
         address_edit_input_layout.setEndIconOnClickListener {
-            Toasty.info(this, "location is clicked", Toast.LENGTH_LONG).show()
-
             gpsUtils.getLatLong { lat, long ->
-                latitutde = lat
-                longitude = long
-                Toasty.info(this, "location is $latitutde + $longitude", Toast.LENGTH_LONG).show()
-
-                Log.d(TAG, "location is $latitutde + $longitude")
-
+                println("location is $lat + $long")
             }
+            LocationListener.getLocation(object : LocationCallback {
+                override fun onLocationSuccess(location: Location) {
+
+                    latitutde = location.latitude
+                    longitude = location.longitude
+
+                    currentAddress = gpsUtils.getAddress(
+                        this@SaveUserDetails,
+                        location.latitude,
+                        location.longitude
+                    )!!
+                    address_name_edit_text.setText(currentAddress)
+                }
+            })
+            Log.d(TAG, "location is $latitutde + $longitude  address: $currentAddress")
+
+
         }
 
         upload_user_btn.setOnClickListener {
 
             val Name = create_name_edit_text.text.toString().trim()
             val anonymousName = anonymous_name_edit_text.text.toString().trim()
-
 
             if (isFormValid()) {
                 uploadImageAndSaveUri(Name, anonymousName, thumb_image)
@@ -141,7 +163,9 @@ class UserDetails : AppCompatActivity() {
             return false
         }
 
-        if (latitutde == null || longitude == null) {
+        if (latitutde == null || longitude == null && address_name_edit_text.text.toString()
+                .trim().length == 0
+        ) {
             Toasty.info(this, "Please Click on Location Button", Toast.LENGTH_LONG).show()
             return false
         }
@@ -173,10 +197,12 @@ class UserDetails : AppCompatActivity() {
 
                     var profile_pic = urlTask.result.toString()
                     var userValues = UserInfo(
+                        user.uid,
                         name,
                         contact,
                         profile_pic,
-                        anonymousName
+                        anonymousName,
+                        currentAddress
                     )
                     firestoreViewModel?.saveUserData(userValues)
 
@@ -191,11 +217,11 @@ class UserDetails : AppCompatActivity() {
                                 // SharedPreferencesDB.savePreferredUser(this, userValues)
                                 dialog.dismiss()
 
-                                /*  val intent = Intent(this, MainActivity::class.java).apply {
+                                val intent = Intent(this, MainActivity::class.java).apply {
                                       flags =
                                           Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                   }
-                                  startActivity(intent)*/
+                                startActivity(intent)
                                 Log.d(TAG, "User profile updated.")
                             } else {
                                 Log.d(TAG, "User profile is not updated.")
@@ -215,8 +241,10 @@ class UserDetails : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        gpsUtils.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
+
+
+        if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
+
             if (data == null) {
                 showError("Failed to open picture!")
                 return
@@ -236,7 +264,7 @@ class UserDetails : AppCompatActivity() {
                 thumb_filePath.let { imageFile ->
                     lifecycleScope.launch {
                         // Full custom
-                        compressedImage = Compressor.compress(this@UserDetails, imageFile) {
+                        compressedImage = Compressor.compress(this@SaveUserDetails, imageFile) {
                             resolution(200, 200)
                             quality(75)
                             format(Bitmap.CompressFormat.WEBP)
@@ -255,6 +283,51 @@ class UserDetails : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onPermissionRequest(isGranted: Boolean) {
+        /**
+         * Check if granted or not
+         */
+        if (isGranted) {
+            /**
+             * Get location for a single time
+             */
+            gpsUtils.getLatLong { lat, long ->
+                println("location is $lat + $long")
+            }
+            LocationListener.getLocation(object : LocationCallback {
+                override fun onLocationSuccess(location: Location) {
+
+                    currentAddress = gpsUtils.getAddress(
+                        this@SaveUserDetails,
+                        location.latitude,
+                        location.longitude
+                    )!!
+
+                }
+            })
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        /**
+         * Pass to the LocationListener
+         */
+        LocationListener.processResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        /**
+         * Self Destroy LocationListener
+         */
+        LocationListener.selfDestroy()
     }
 
     private fun showError(errorMessage: String) {

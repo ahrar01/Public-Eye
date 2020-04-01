@@ -70,7 +70,7 @@ dependencies {
     //=====================================================================================
     // Location
     implementation "com.google.android.gms:play-services-location:17.0.0"
-
+    implementation 'com.github.rommansabbir:LocationListener-Android:1.1'
     //=====================================================================================
     // Toasty
     implementation 'com.github.GrenderG:Toasty:1.4.2'

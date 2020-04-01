@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.auth.UserDetails"
+            android:name=".ui.auth.SaveUserDetails"
             android:theme="@style/MaterialTheme">
 
         </activity>
@@ -38,6 +38,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.home.MainActivity" />
+
+
     </application>
 
 </manifest>
