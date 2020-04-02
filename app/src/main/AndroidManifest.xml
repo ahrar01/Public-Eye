@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.qdesigns.publiceye">
-
+    <!-- Required for 28 and below. -->
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+    <!-- Required for 29+. -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -38,6 +41,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.home.MainActivity" />
+        <!-- TRANSITION RECOGNITION - BROADCAST RECEIVER -->
+        <receiver
+            android:name=".ui.home.TransitionRecognition.TransitionRecognitionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.qdesigns.publiceye.TRANSITION_RECOGNITION" />
+            </intent-filter>
+        </receiver>
 
 
     </application>
