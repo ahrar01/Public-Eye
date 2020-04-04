@@ -28,6 +28,37 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    // define a custom drawer style
+
+    <style name="Widget.MaterialDrawerStyleCustom" parent="Widget.MaterialDrawerStyle">
+        <item name="materialDrawerInsetForeground">#4000</item>
+        <!-- MaterialDrawer specific values -->
+        <item name="materialDrawerBackground">?colorSurface</item>
+        <item name="materialDrawerPrimaryText">?android:textColorPrimary</item>
+        <item name="materialDrawerPrimaryIcon">?android:textColorSecondary</item>
+        <item name="materialDrawerSecondaryText">?android:textColorSecondary</item>
+        <item name="materialDrawerSecondaryIcon">?android:textColorSecondary</item>
+        <item name="materialDrawerDividerColor">?android:textColorHint</item>
+        <item name="materialDrawerSelectedBackgroundColor">?colorPrimary</item>
+    </style>
+
+    // define a custom header style
+
+    <style name="Widget.MaterialDrawerHeaderStyleCustom" parent="">
+        <item name="materialDrawerCompactStyle">true</item>
+        <item name="materialDrawerHeaderSelectionText">@color/black</item>
+        <item name="materialDrawerHeaderLayout">@color/colorPrimary</item>
+        <item name="materialDrawerHeaderSelectionSubtext">?colorOnSurface</item>
+    </style>
+
+    // define the custom styles for the theme
+
+    <style name="SampleApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="materialDrawerStyle">@style/Widget.MaterialDrawerStyleCustom</item>
+        <item name="materialDrawerHeaderStyle">@style/Widget.MaterialDrawerHeaderStyleCustom</item>
+    </style>
+
     <style name="RedTheme" parent="FirebaseUI">
         <!-- Required for sign-in flow styling -->
         <item name="colorPrimary">@color/colorPrimary</item>
