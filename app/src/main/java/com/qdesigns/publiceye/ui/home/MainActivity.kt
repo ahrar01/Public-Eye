@@ -1,24 +1,23 @@
 package com.qdesigns.publiceye.ui.home
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
+import android.content.IntentFilter
 import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.updatePadding
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.firebase.ui.auth.AuthUI
+import com.google.android.gms.location.DetectedActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
-import com.mikepenz.materialdrawer.holder.ColorHolder
 import com.mikepenz.materialdrawer.holder.ImageHolder
 import com.mikepenz.materialdrawer.iconics.withIcon
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
@@ -29,25 +28,78 @@ import com.mikepenz.materialdrawer.model.interfaces.*
 import com.mikepenz.materialdrawer.util.addStickyDrawerItems
 import com.mikepenz.materialdrawer.widget.AccountHeaderView
 import com.qdesigns.publiceye.R
+import com.qdesigns.publiceye.services.BackgroundDetectedActivitiesService
 import com.qdesigns.publiceye.ui.auth.AuthActivity
-import com.qdesigns.publiceye.ui.auth.SaveUserDetails
-import com.qdesigns.publiceye.ui.home.TransitionRecognition.TransitionRecognition
-import com.qdesigns.publiceye.ui.home.TransitionRecognition.TransitionRecognitionUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 class MainActivity : AppCompatActivity() {
-    private lateinit var mTransitionRecognition: TransitionRecognition
+    private val TAG = MainActivity::class.java.simpleName
+
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     private lateinit var headerView: AccountHeaderView
     var user = FirebaseAuth.getInstance().currentUser!!
 
+    internal lateinit var broadcastReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initTransitionRecognition()
-        // Handle Toolbar
+        // Handle NavigationDrawer
+        setupNavigationDrawer(savedInstanceState)
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == MainActivity.BROADCAST_DETECTED_ACTIVITY) {
+                    val type = intent.getIntExtra("type", -1)
+                    val confidence = intent.getIntExtra("confidence", 0)
+                    handleUserActivity(type, confidence)
+                }
+            }
+        }
+        startTracking()
+    }
+
+    private fun handleUserActivity(type: Int, confidence: Int) {
+        var label = getString(R.string.activity_unknown)
+
+        when (type) {
+            DetectedActivity.IN_VEHICLE -> {
+                label = "You are in Vehicle"
+            }
+            DetectedActivity.ON_BICYCLE -> {
+                label = "You are on Bicycle"
+            }
+            DetectedActivity.ON_FOOT -> {
+                label = "You are on Foot"
+            }
+            DetectedActivity.RUNNING -> {
+                label = "You are Running"
+            }
+            DetectedActivity.STILL -> {
+                label = "You are Still"
+            }
+            DetectedActivity.TILTING -> {
+                label = "Your phone is Tilted"
+            }
+            DetectedActivity.WALKING -> {
+                label = "You are Walking"
+            }
+            DetectedActivity.UNKNOWN -> {
+                label = "Unkown Activity"
+            }
+        }
+
+        Log.e(TAG, "User activity: $label, Confidence: $confidence")
+
+        if (confidence > MainActivity.CONFIDENCE) {
+            main_activity_tv?.text = label
+            txt_confidence?.text = "Confidence: $confidence"
+        }
+    }
+
+
+    private fun setupNavigationDrawer(savedInstanceState: Bundle?) {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
@@ -100,7 +152,7 @@ class MainActivity : AppCompatActivity() {
             )
             addStickyDrawerItems(
                 SecondaryDrawerItem().withName("log out")
-                    .withIcon(FontAwesome.Icon.faw_sign_out_alt).withIdentifier(1)
+                    .withIcon(FontAwesome.Icon.faw_sign_out_alt).withIdentifier(10)
             )
             onDrawerItemClickListener = { v, drawerItem, position ->
                 if (drawerItem is Nameable) {
@@ -111,7 +163,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 var intent: Intent? = null
                 when {
-                    drawerItem.identifier == 1L -> signOut()
+                    drawerItem.identifier == 10L -> signOut()
 
                 }
                 if (intent != null) {
@@ -126,10 +178,23 @@ class MainActivity : AppCompatActivity() {
             toolbar.updatePadding(top = insets.systemWindowInsetRight)
             insets
         }
-        willDeleteTHis.setOnClickListener {
-            signOut()
-        }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            broadcastReceiver,
+            IntentFilter(BROADCAST_DETECTED_ACTIVITY)
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+    }
+
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -164,38 +229,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        showPreviousTransitions()
+    private fun startTracking() {
+        val intent = Intent(this@MainActivity, BackgroundDetectedActivitiesService::class.java)
+        startService(intent)
     }
 
-    override fun onPause() {
-        mTransitionRecognition.stopTracking()
-        super.onPause()
+    private fun stopTracking() {
+        val intent = Intent(this@MainActivity, BackgroundDetectedActivitiesService::class.java)
+        stopService(intent)
     }
 
-    /**
-     * INIT TRANSITION RECOGNITION
-     */
-    fun initTransitionRecognition() {
-        mTransitionRecognition = TransitionRecognition()
-        mTransitionRecognition.startTracking(this)
+    companion object {
+
+        val BROADCAST_DETECTED_ACTIVITY = "activity_intent"
+
+        internal val DETECTION_INTERVAL_IN_MILLISECONDS: Long = 7000
+
+        val CONFIDENCE = 70
     }
 
-    /**
-     * Show previous transitions. This is an example to explain how to detect user's activity. To
-     * see this activity we have to relaunch the app.
-     */
-    fun showPreviousTransitions() {
-        val sharedPref = getSharedPreferences(
-            TransitionRecognitionUtils.SHARED_PREFERENCES_FILE_KEY_TRANSITIONS, Context.MODE_PRIVATE
-        )
-
-        var previousTransitions =
-            sharedPref.getString(TransitionRecognitionUtils.SHARED_PREFERENCES_KEY_TRANSITIONS, "")
-
-        main_activity_tv.text = previousTransitions
-    }
 
     fun signOut() {
         AuthUI.getInstance()

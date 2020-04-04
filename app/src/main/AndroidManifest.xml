@@ -46,13 +46,8 @@
             android:theme="@style/MaterialTheme" />
 
         <!-- TRANSITION RECOGNITION - BROADCAST RECEIVER -->
-        <receiver
-            android:name=".ui.home.TransitionRecognition.TransitionRecognitionReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.qdesigns.publiceye.TRANSITION_RECOGNITION" />
-            </intent-filter>
-        </receiver>
+        <service android:name=".services.DetectedActivitiesIntentService" />
+        <service android:name=".services.BackgroundDetectedActivitiesService" />
 
 
     </application>
