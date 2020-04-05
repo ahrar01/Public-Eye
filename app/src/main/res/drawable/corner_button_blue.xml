@@ -13,7 +13,7 @@
 
     <item android:state_focused="false" android:state_pressed="false">
         <shape>
-            <solid android:color="#6177FC" />
+            <solid android:color="#309FFF" />
             <stroke android:width="2dp" android:color="#fff" />
             <corners android:radius="5dp" />
         </shape>

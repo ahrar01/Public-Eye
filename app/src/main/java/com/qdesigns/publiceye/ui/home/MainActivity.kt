@@ -8,13 +8,19 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.updatePadding
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.auth.AuthUI
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.DetectedActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
@@ -30,12 +36,14 @@ import com.mikepenz.materialdrawer.widget.AccountHeaderView
 import com.qdesigns.publiceye.R
 import com.qdesigns.publiceye.services.BackgroundDetectedActivitiesService
 import com.qdesigns.publiceye.ui.auth.AuthActivity
+import com.qdesigns.publiceye.ui.auth.SaveUserDetails
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
+    private val PROFILE_IMAGE_REQ_CODE = 101
 
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     private lateinit var headerView: AccountHeaderView
@@ -58,6 +66,44 @@ class MainActivity : AppCompatActivity() {
             }
         }
         startTracking()
+
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
+        name_tv.setText(user!!.displayName)
+
+        val options: RequestOptions = RequestOptions()
+            .centerCrop()
+            .placeholder(R.drawable.user_placeholder)
+            .error(R.drawable.user_placeholder)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .priority(Priority.HIGH)
+            .dontAnimate()
+            .dontTransform()
+
+        Glide.with(this)
+            .applyDefaultRequestOptions(options)
+            .load(user!!.photoUrl)
+            .into(profile_pic)
+
+        imagePicker.setOnClickListener {
+            pickProfileImage()
+
+        }
+    }
+
+    fun pickProfileImage() {
+        ImagePicker.with(this)
+            // Crop Square image
+            .crop()
+            .setImageProviderInterceptor { imageProvider -> // Intercept ImageProvider
+                Log.d("ImagePicker", "Selected ImageProvider: " + imageProvider.name)
+            }
+            .compress(1024)
+            // Image resolution will be less than 512 x 512
+            .maxResultSize(512, 512)
+            .start(PROFILE_IMAGE_REQ_CODE)
     }
 
     private fun handleUserActivity(type: Int, confidence: Int) {
@@ -134,7 +180,7 @@ class MainActivity : AppCompatActivity() {
             itemAdapter.add(
                 PrimaryDrawerItem().withName(R.string.drawer_item_home)
                     .withIcon(FontAwesome.Icon.faw_home).withIdentifier(1),
-                PrimaryDrawerItem().withName(R.string.drawer_item_edit_profile)
+                PrimaryDrawerItem().withName(R.string.drawer_item_edit_profile).withIdentifier(2)
                     .withIcon(FontAwesome.Icon.faw_user_edit),
                 PrimaryDrawerItem().withName(R.string.drawer_item_complaints)
                     .withIcon(FontAwesome.Icon.faw_clipboard_list),
@@ -163,6 +209,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 var intent: Intent? = null
                 when {
+                    drawerItem.identifier == 2L -> intent =
+                        Intent(this@MainActivity, SaveUserDetails::class.java)
+
                     drawerItem.identifier == 10L -> signOut()
 
                 }
@@ -182,6 +231,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        startTracking()
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
             broadcastReceiver,
@@ -191,8 +241,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        stopTracking()
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+    }
+
+
+    override fun onDestroy() {
+        stopTracking()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+        super.onDestroy()
     }
 
 

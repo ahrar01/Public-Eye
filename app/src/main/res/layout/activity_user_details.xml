@@ -152,7 +152,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/corner_button_blue"
-        android:text="next"
+        android:text="Save"
         android:textColor="#fff"
         android:textStyle="bold" />
 

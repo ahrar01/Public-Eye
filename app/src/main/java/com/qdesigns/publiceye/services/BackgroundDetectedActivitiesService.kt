@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.location.ActivityRecognitionClient
 import com.qdesigns.publiceye.ui.home.MainActivity
@@ -47,21 +48,13 @@ class BackgroundDetectedActivitiesService : Service() {
         )
 
         task?.addOnSuccessListener {
-            Toast.makeText(
-                applicationContext,
-                "Successfully requested activity updates",
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            Log.d(TAG, "Successfully requested activity updates")
+
         }
 
         task?.addOnFailureListener {
-            Toast.makeText(
-                applicationContext,
-                "Requesting activity updates failed to start",
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            Log.d(TAG, "Requesting activity updates failed to start")
+
         }
     }
 
@@ -70,19 +63,12 @@ class BackgroundDetectedActivitiesService : Service() {
             mPendingIntent
         )
         task?.addOnSuccessListener {
-            Toast.makeText(
-                applicationContext,
-                "Removed activity updates successfully!",
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            Log.d(TAG, "Removed activity updates successfully!")
         }
 
         task?.addOnFailureListener {
-            Toast.makeText(
-                applicationContext, "Failed to remove activity updates!",
-                Toast.LENGTH_SHORT
-            ).show()
+            Log.d(TAG, "Failed to remove activity updates!")
+
         }
     }
 
