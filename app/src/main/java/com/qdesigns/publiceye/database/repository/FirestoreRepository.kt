@@ -2,6 +2,8 @@ package com.qdesigns.publiceye.database.repository
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.qdesigns.publiceye.database.modal.UserInfo

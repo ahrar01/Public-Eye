@@ -9,6 +9,8 @@
     tools:context=".ui.home.MainActivity">
 
     <RelativeLayout
+        android:id="@+id/homePageLayout"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -135,6 +137,7 @@
                 android:background="@color/grey_light" />
 
             <LinearLayout
+                android:id="@+id/emailViewLL"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:orientation="horizontal"
@@ -160,13 +163,9 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="2dp"
-                android:background="@color/grey_light" />
 
             <LinearLayout
+                android:id="@+id/phone_numberLL"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:orientation="horizontal"
@@ -216,7 +215,8 @@
                     android:tint="@color/colorPrimary" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/address_view"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.9"
                     android:gravity="center_vertical"

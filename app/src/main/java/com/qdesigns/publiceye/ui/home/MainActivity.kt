@@ -1,5 +1,6 @@
 package com.qdesigns.publiceye.ui.home
 
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.updatePadding
+import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
@@ -23,6 +25,8 @@ import com.firebase.ui.auth.AuthUI
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.DetectedActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.materialdrawer.holder.ImageHolder
 import com.mikepenz.materialdrawer.iconics.withIcon
@@ -37,6 +41,8 @@ import com.qdesigns.publiceye.R
 import com.qdesigns.publiceye.services.BackgroundDetectedActivitiesService
 import com.qdesigns.publiceye.ui.auth.AuthActivity
 import com.qdesigns.publiceye.ui.auth.SaveUserDetails
+import com.qdesigns.publiceye.utils.setProgressDialog
+import com.qdesigns.publiceye.viewmodel.FirestoreViewModel
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -44,16 +50,29 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
     private val PROFILE_IMAGE_REQ_CODE = 101
-
+    var firestoreViewModel: FirestoreViewModel? = null
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     private lateinit var headerView: AccountHeaderView
     var user = FirebaseAuth.getInstance().currentUser!!
 
     internal lateinit var broadcastReceiver: BroadcastReceiver
+    val firestoreDB: FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
 
+    var address = ""
+    var anonymousName = ""
+    var contact = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val dialog = setProgressDialog(this)
+        dialog.show()
+        firestoreViewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
+
+        getLayout(dialog)
+        setupClickListeners()
+
         // Handle NavigationDrawer
         setupNavigationDrawer(savedInstanceState)
         broadcastReceiver = object : BroadcastReceiver() {
@@ -67,11 +86,45 @@ class MainActivity : AppCompatActivity() {
         }
         startTracking()
 
-        setupClickListeners()
+    }
+
+    private fun getLayout(dialog: Dialog) {
+        val docRef = firestoreDB.collection("users").document(user.uid)
+        // Source can be CACHE, SERVER, or DEFAULT.
+        val source = Source.CACHE
+
+        // Get the document, forcing the SDK to use the offline cache
+        docRef.get(source).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Document found in the offline cache
+                val document = task.result
+                anonymousName = document?.data?.get("anonymousName").toString()
+                address = document?.data?.get("address").toString()
+
+                anonymous_name_tv.setText(anonymousName)
+                address_view.setText(address)
+                dialog.dismiss()
+                homePageLayout.visibility = View.VISIBLE
+                Log.d(TAG, "Cached document data:$anonymousName  $address  $contact")
+            } else {
+                Log.d(TAG, "Cached get failed: ", task.exception)
+            }
+        }
     }
 
     private fun setupClickListeners() {
-        name_tv.setText(user!!.displayName)
+        if (user.email.isNullOrEmpty()) {
+            emailViewLL.visibility = View.GONE
+            mobileview.setText(user.phoneNumber)
+            contact = user.phoneNumber.toString()
+        } else {
+            phone_numberLL.visibility = View.GONE
+            emailview.setText(user.email)
+            contact = user.email.toString()
+
+        }
+
+        name_tv.setText(user.displayName)
 
         val options: RequestOptions = RequestOptions()
             .centerCrop()
@@ -161,7 +214,7 @@ class MainActivity : AppCompatActivity() {
         headerView = AccountHeaderView(this).apply {
             attachToSliderView(slider) // attach to the slider
             addProfiles(
-                ProfileDrawerItem().withName(user.displayName).withEmail(user.phoneNumber)
+                ProfileDrawerItem().withName(user.displayName).withEmail(contact)
                     .withIcon(user.photoUrl!!)
 
             )
