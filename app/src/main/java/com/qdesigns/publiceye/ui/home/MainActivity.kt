@@ -172,6 +172,8 @@ class MainActivity : AppCompatActivity() {
                 PROFILE_IMAGE_REQ_CODE -> {
                     var sendToAddDetails = Intent(this, AddDetails::class.java)
                     sendToAddDetails.putExtra("imageFile", file)
+                    sendToAddDetails.putExtra("anonymousName", anonymousName)
+
                     startActivity(sendToAddDetails)
                 }
             }

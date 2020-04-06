@@ -6,6 +6,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.qdesigns.publiceye.database.modal.Complaints
 import com.qdesigns.publiceye.database.modal.UserInfo
 
 class FirestoreRepository {
@@ -19,6 +20,12 @@ class FirestoreRepository {
     fun saveUserInfo(userInfo: UserInfo): Task<Void> {
         var documentReference = firestoreDB.collection("users").document(user.uid)
         return documentReference.set(userInfo, SetOptions.merge())
+    }
+
+    //save user info
+    fun saveComplainsInfo(complaints: Complaints): Task<Void> {
+        var documentReference = firestoreDB.collection("complaints").document()
+        return documentReference.set(complaints)
     }
 
 }

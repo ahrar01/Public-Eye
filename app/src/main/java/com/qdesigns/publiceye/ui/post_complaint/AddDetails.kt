@@ -12,7 +12,7 @@ import java.io.File
 class AddDetails : AppCompatActivity() {
 
     lateinit var imageFile: File
-
+    var anonymousName = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_details)
@@ -22,7 +22,7 @@ class AddDetails : AppCompatActivity() {
         supportActionBar?.setHomeButtonEnabled(true)
 
         imageFile = intent.extras?.get("imageFile") as File
-
+        anonymousName = intent.extras?.get("anonymousName") as String
         image_show.setLocalImage(imageFile)
 
         continue_button.setOnClickListener {
@@ -31,6 +31,8 @@ class AddDetails : AppCompatActivity() {
                 var sendToAddDetails = Intent(this, GetLocation::class.java)
                 sendToAddDetails.putExtra("imageFile", imageFile)
                 sendToAddDetails.putExtra("vehicle_number", vehicle_number)
+                sendToAddDetails.putExtra("anonymousName", anonymousName)
+
 
                 startActivity(sendToAddDetails)
             }
