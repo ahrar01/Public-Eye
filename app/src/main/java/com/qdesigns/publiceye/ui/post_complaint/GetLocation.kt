@@ -121,7 +121,10 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
                         anonymousName,
                         vehicleNumber,
                         addressNameGet,
-                        FieldValue.serverTimestamp()
+                        FieldValue.serverTimestamp(),
+                        this!!.latitutde!!,
+                        this!!.longitude!!
+
 
                     )
 

@@ -25,6 +25,10 @@
     <string name="activity_walking">walking</string>
     <string name="activity_unknown">Unknown</string>
 
+    <string-array name="sort">
+        <item>All Complaints</item>
+        <item>My Complaints</item>
+    </string-array>
 
     <string name="drawer_item_home">Home</string>
     <string name="drawer_item_complaints">Complaints</string>

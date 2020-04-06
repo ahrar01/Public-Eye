@@ -59,6 +59,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx:21.4.2'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
+    // FirebaseUI for Cloud Firestore
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
 
     //=====================================================================================
     // Room components
@@ -108,6 +110,7 @@ dependencies {
     implementation 'com.mikepenz:google-material-typeface:3.0.1.4.original-kotlin@aar'
     implementation 'com.mikepenz:fontawesome-typeface:5.3.1.2-kotlin@aar'
     implementation 'com.mikepenz:octicons-typeface:3.2.0.6-kotlin@aar'
-
+    implementation "com.mikepenz:fastadapter:5.0.0"
+    //=====================================================
     implementation 'com.github.dhaval2404:imagepicker:1.7.1'
 }

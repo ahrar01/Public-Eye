@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="10dp"
+    app:cardCornerRadius="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:id="@+id/reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="Reason"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/complaintAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/reason"
+            android:drawableStart="@drawable/ic_place_black_24dp"
+            android:drawablePadding="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Address"
+            android:textColor="@color/md_blue_600"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/booked_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/complaintAddress"
+            android:layout_margin="3dp"
+            android:background="@drawable/round_bg"
+            android:padding="5dp"
+            android:text="BOOKED"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/complaintAddress"
+            android:layout_margin="3dp"
+            android:layout_toEndOf="@+id/booked_tv"
+            android:padding="5dp"
+            android:text="Picture Taken At:"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/fullAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/booked_tv"
+            android:padding="4dp"
+            android:text="full Address"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/vehicleRegNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fullAddress"
+            android:padding="4dp"
+            android:text="Vehicle Registration Number"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:id="@+id/reportPic"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/vehicleRegNumber"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

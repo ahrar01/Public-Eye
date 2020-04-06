@@ -42,6 +42,7 @@ import com.qdesigns.publiceye.R
 import com.qdesigns.publiceye.services.BackgroundDetectedActivitiesService
 import com.qdesigns.publiceye.ui.auth.AuthActivity
 import com.qdesigns.publiceye.ui.auth.SaveUserDetails
+import com.qdesigns.publiceye.ui.complaints.ComplaintsActivity
 import com.qdesigns.publiceye.ui.post_complaint.AddDetails
 import com.qdesigns.publiceye.utils.setProgressDialog
 import com.qdesigns.publiceye.viewmodel.FirestoreViewModel
@@ -261,7 +262,7 @@ class MainActivity : AppCompatActivity() {
                 PrimaryDrawerItem().withName(R.string.drawer_item_edit_profile).withIdentifier(2)
                     .withIcon(FontAwesome.Icon.faw_user_edit),
                 PrimaryDrawerItem().withName(R.string.drawer_item_complaints)
-                    .withIcon(FontAwesome.Icon.faw_clipboard_list),
+                    .withIcon(FontAwesome.Icon.faw_clipboard_list).withIdentifier(3),
                 //add some more items to get a scrolling list
                 SectionDrawerItem().withName(R.string.drawer_item_section_header),
                 SecondaryDrawerItem().withName(R.string.drawer_item_settings)
@@ -289,6 +290,8 @@ class MainActivity : AppCompatActivity() {
                 when {
                     drawerItem.identifier == 2L -> intent =
                         Intent(this@MainActivity, SaveUserDetails::class.java)
+                    drawerItem.identifier == 3L -> intent =
+                        Intent(this@MainActivity, ComplaintsActivity::class.java)
 
                     drawerItem.identifier == 10L -> signOut()
 
