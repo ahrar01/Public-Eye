@@ -1,5 +1,6 @@
 package com.qdesigns.publiceye.ui.home
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -41,6 +42,7 @@ import com.qdesigns.publiceye.R
 import com.qdesigns.publiceye.services.BackgroundDetectedActivitiesService
 import com.qdesigns.publiceye.ui.auth.AuthActivity
 import com.qdesigns.publiceye.ui.auth.SaveUserDetails
+import com.qdesigns.publiceye.ui.post_complaint.AddDetails
 import com.qdesigns.publiceye.utils.setProgressDialog
 import com.qdesigns.publiceye.viewmodel.FirestoreViewModel
 import es.dmoral.toasty.Toasty
@@ -107,6 +109,8 @@ class MainActivity : AppCompatActivity() {
                 homePageLayout.visibility = View.VISIBLE
                 Log.d(TAG, "Cached document data:$anonymousName  $address  $contact")
             } else {
+                dialog.dismiss()
+
                 Log.d(TAG, "Cached get failed: ", task.exception)
             }
         }
@@ -154,9 +158,28 @@ class MainActivity : AppCompatActivity() {
                 Log.d("ImagePicker", "Selected ImageProvider: " + imageProvider.name)
             }
             .compress(1024)
-            // Image resolution will be less than 512 x 512
-            .maxResultSize(512, 512)
             .start(PROFILE_IMAGE_REQ_CODE)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            Log.e("TAG", "Path:${ImagePicker.getFilePath(data)}")
+            // File object will not be null for RESULT_OK
+            val file = ImagePicker.getFile(data)!!
+            when (requestCode) {
+                PROFILE_IMAGE_REQ_CODE -> {
+                    var sendToAddDetails = Intent(this, AddDetails::class.java)
+                    sendToAddDetails.putExtra("imageFile", file)
+                    startActivity(sendToAddDetails)
+                }
+            }
+        } else if (resultCode == ImagePicker.RESULT_ERROR) {
+            Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun handleUserActivity(type: Int, confidence: Int) {

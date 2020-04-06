@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.qdesigns.publiceye">
     <!-- Required for 28 and below. -->
-    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-    <!-- Required for 29+. -->
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" /> <!-- Required for 29+. -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -22,9 +21,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.auth.SaveUserDetails"
+            android:name=".ui.post_complaint.GetLocation"
             android:theme="@style/MaterialTheme">
 
+        </activity>
+        <activity
+            android:name=".ui.post_complaint.AddDetails"
+            android:theme="@style/MaterialTheme"></activity>
+        <activity
+            android:name=".ui.auth.SaveUserDetails"
+            android:theme="@style/MaterialTheme">
         </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
@@ -43,13 +49,9 @@
         </activity>
         <activity
             android:name=".ui.home.MainActivity"
-            android:theme="@style/MaterialTheme" />
-
-        <!-- TRANSITION RECOGNITION - BROADCAST RECEIVER -->
+            android:theme="@style/MaterialTheme" /> <!-- TRANSITION RECOGNITION - BROADCAST RECEIVER -->
         <service android:name=".services.DetectedActivitiesIntentService" />
         <service android:name=".services.BackgroundDetectedActivitiesService" />
-
-
     </application>
 
 </manifest>
