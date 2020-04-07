@@ -65,4 +65,23 @@
         android:layout_below="@+id/cBookings">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/no_complaints_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="62dp"
+        android:background="@color/white"
+        android:elevation="5dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="10dp"
+        android:text="No Complaints"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
 </RelativeLayout>

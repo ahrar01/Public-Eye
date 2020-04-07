@@ -10,7 +10,7 @@ data class Complaints(
     var anonymousName: String = "",
     var vehicleNumber: String = "",
     var address: String = "",
-    var submitedDate: Any = FieldValue.serverTimestamp(),
+    var submitedDate: Long = 0L,
     var latitude: Double = 0.0,
     var longitude: Double = 0.0
 )

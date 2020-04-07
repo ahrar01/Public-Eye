@@ -112,7 +112,7 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
                         contact = user.email.toString()
 
                     var reportPic = urlTask.result.toString()
-
+                    val currentTimestamp = System.currentTimeMillis()
                     var saveComplaint = Complaints(
                         user.uid,
                         user.displayName.toString(),
@@ -121,7 +121,7 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
                         anonymousName,
                         vehicleNumber,
                         addressNameGet,
-                        FieldValue.serverTimestamp(),
+                        currentTimestamp,
                         this!!.latitutde!!,
                         this!!.longitude!!
 
