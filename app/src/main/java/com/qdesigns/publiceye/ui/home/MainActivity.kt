@@ -280,12 +280,6 @@ class MainActivity : AppCompatActivity() {
                     .withIcon(FontAwesome.Icon.faw_sign_out_alt).withIdentifier(10)
             )
             onDrawerItemClickListener = { v, drawerItem, position ->
-                if (drawerItem is Nameable) {
-                    Toasty.info(
-                        this@MainActivity,
-                        drawerItem.name?.getText(this@MainActivity).toString(), Toast.LENGTH_SHORT
-                    ).show()
-                }
                 var intent: Intent? = null
                 when {
                     drawerItem.identifier == 2L -> intent =

@@ -1,11 +1,15 @@
 package com.qdesigns.publiceye.ui.complaints
 
+import android.nfc.Tag
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
@@ -21,6 +25,9 @@ class ComplaintsActivity : AppCompatActivity() {
     lateinit var firestore: FirebaseFirestore
     lateinit var query: Query
     lateinit var adapter: ComplaintsAdapter
+    var user = FirebaseAuth.getInstance().currentUser!!
+    private val TAG = ComplaintsActivity::class.java.simpleName
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_complaints)
@@ -32,6 +39,26 @@ class ComplaintsActivity : AppCompatActivity() {
             android.R.layout.simple_spinner_item, sort
         )
         Filterbtn.adapter = spinnerAdapter
+
+        Filterbtn.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View, position: Int, id: Long
+            ) {
+                if (position == 0) {
+                    onFilter(0)
+                }
+                if (position == 1) {
+                    onFilter(1)
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // write code to perform some action
+            }
+
+        }
 
         // Firestore
         firestore = Firebase.firestore
@@ -56,15 +83,34 @@ class ComplaintsActivity : AppCompatActivity() {
 
             override fun onError(e: FirebaseFirestoreException) {
                 // Show a snackbar on errors
-                Snackbar.make(
-                    findViewById(android.R.id.content),
-                    "Error: check logs for info.", Snackbar.LENGTH_LONG
-                ).show()
+                Log.e(TAG, "${e.message}")
             }
         }
 
         complaints_RecyclerView.layoutManager = LinearLayoutManager(this)
         complaints_RecyclerView.adapter = adapter
+    }
+
+    fun onFilter(number: Int) {
+        // Construct query basic query
+        var query: Query = firestore.collection("complaints")
+
+        if (number == 0) {
+            query = query.orderBy("submitedDate", Query.Direction.DESCENDING)
+
+        }
+
+        if (number == 1) {
+            query = query.whereEqualTo("uid", user.uid)
+                .orderBy("submitedDate", Query.Direction.DESCENDING)
+        }
+
+        // Limit items
+        query = query.limit(LIMIT.toLong())
+
+        // Update the query
+        adapter.setQuery(query)
+
     }
 
     public override fun onStart() {
