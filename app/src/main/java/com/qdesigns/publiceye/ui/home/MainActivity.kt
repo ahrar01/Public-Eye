@@ -44,6 +44,7 @@ import com.qdesigns.publiceye.ui.auth.AuthActivity
 import com.qdesigns.publiceye.ui.auth.SaveUserDetails
 import com.qdesigns.publiceye.ui.complaints.ComplaintsActivity
 import com.qdesigns.publiceye.ui.post_complaint.AddDetails
+import com.qdesigns.publiceye.ui.quiz.QuizActivity
 import com.qdesigns.publiceye.utils.setProgressDialog
 import com.qdesigns.publiceye.viewmodel.FirestoreViewModel
 import es.dmoral.toasty.Toasty
@@ -146,13 +147,17 @@ class MainActivity : AppCompatActivity() {
             .into(profile_pic)
 
         imagePicker.setOnClickListener {
-            pickProfileImage()
+            // pickProfileImage()
 
+            startActivity(
+                Intent(this, QuizActivity::class.java)
+            )
         }
     }
 
     fun pickProfileImage() {
         ImagePicker.with(this)
+            .cameraOnly()
             // Crop Square image
             .crop()
             .setImageProviderInterceptor { imageProvider -> // Intercept ImageProvider
@@ -206,6 +211,7 @@ class MainActivity : AppCompatActivity() {
             }
             DetectedActivity.TILTING -> {
                 label = "Your phone is Tilted"
+                pickProfileImage()
             }
             DetectedActivity.WALKING -> {
                 label = "You are Walking"
@@ -376,7 +382,7 @@ class MainActivity : AppCompatActivity() {
 
         val BROADCAST_DETECTED_ACTIVITY = "activity_intent"
 
-        internal val DETECTION_INTERVAL_IN_MILLISECONDS: Long = 7000
+        internal val DETECTION_INTERVAL_IN_MILLISECONDS: Long = 5000
 
         val CONFIDENCE = 70
     }
