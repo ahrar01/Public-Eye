@@ -1,14 +1,20 @@
 package com.qdesigns.publiceye.ui.post_complaint
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source
 import com.google.firebase.storage.FirebaseStorage
 import com.qdesigns.publiceye.R
 import com.qdesigns.publiceye.database.modal.Complaints
@@ -27,6 +33,8 @@ import java.io.FileInputStream
 import java.util.*
 
 class GetLocation : AppCompatActivity(), PermissionCallback {
+    private val TAG = GetLocation::class.java.simpleName
+
     lateinit var imageFile: File
     var vehicleNumber = ""
     private lateinit var gpsUtils: GpsUtils
@@ -36,6 +44,11 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
     var user = FirebaseAuth.getInstance().currentUser!!
     var anonymousName = ""
     var firestoreViewModel: FirestoreViewModel? = null
+    val firestoreDB: FirebaseFirestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
+
+    var numberOfPost: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +64,28 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
          */
         LocationListener.setComponent(this)
         setupClickListeners()
-
+        getNumberOfPost()
     }
+
+    private fun getNumberOfPost() {
+        val docRef = firestoreDB.collection("users").document(user.uid)
+
+        // Get the document, forcing the SDK to use the offline cache
+        docRef.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Document found in the offline cache
+                val document = task.result
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    numberOfPost = document?.data?.getOrDefault("numberOfPost", 0.toLong()) as Long
+                }
+
+                Log.d(TAG, "Cached document numberOfPost data:$numberOfPost ")
+            } else {
+                Log.d(TAG, "Cached get failed: ", task.exception)
+            }
+        }
+    }
+
 
     private fun setupClickListeners() {
         address_edit_input_get_locationLayout.setEndIconOnClickListener {
@@ -128,6 +161,10 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
 
                     )
 
+                    val data = hashMapOf("numberOfPost" to numberOfPost + 1)
+
+                    firestoreDB.collection("users").document(user.uid)
+                        .set(data, SetOptions.merge())
                     firestoreViewModel?.saveComplaints(saveComplaint)
                     dialog.dismiss()
                     val intent = Intent(this, MainActivity::class.java).apply {

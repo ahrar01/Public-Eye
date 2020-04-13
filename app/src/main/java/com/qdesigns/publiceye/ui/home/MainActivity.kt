@@ -1,5 +1,6 @@
 package com.qdesigns.publiceye.ui.home
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.BroadcastReceiver
@@ -7,11 +8,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -64,6 +67,7 @@ class MainActivity : AppCompatActivity() {
     val firestoreDB: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()
     }
+    var numberOfPost: Long = 0
 
     var address = ""
     var anonymousName = ""
@@ -103,11 +107,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
     private fun getLayout(dialog: Dialog) {
         val docRef = firestoreDB.collection("users").document(user.uid)
         // Source can be CACHE, SERVER, or DEFAULT.
         val source = Source.CACHE
-
         // Get the document, forcing the SDK to use the offline cache
         docRef.get(source).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -115,12 +119,19 @@ class MainActivity : AppCompatActivity() {
                 val document = task.result
                 anonymousName = document?.data?.get("anonymousName").toString()
                 address = document?.data?.get("address").toString()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    numberOfPost = document?.data?.getOrDefault("numberOfPost", 1.toLong()) as Long
+                }
+
 
                 anonymous_name_tv.setText(anonymousName)
                 address_view.setText(address)
                 dialog.dismiss()
                 homePageLayout.visibility = View.VISIBLE
-                Log.d(TAG, "Cached document data:$anonymousName  $address  $contact")
+                Log.d(
+                    TAG,
+                    "Cached document data:$anonymousName  $address  $contact numberOfPost: $numberOfPost "
+                )
             } else {
                 dialog.dismiss()
 
@@ -180,6 +191,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 pickProfileImage()
             }
+
 
         }
     }
