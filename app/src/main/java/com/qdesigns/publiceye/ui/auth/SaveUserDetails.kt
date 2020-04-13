@@ -218,9 +218,9 @@ class SaveUserDetails : AppCompatActivity(), PermissionCallback {
                                 dialog.dismiss()
 
                                 val intent = Intent(this, MainActivity::class.java).apply {
-                                      flags =
-                                          Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                  }
+                                    flags =
+                                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                }
                                 startActivity(intent)
                                 Log.d(TAG, "User profile updated.")
                             } else {

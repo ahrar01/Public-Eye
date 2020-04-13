@@ -32,6 +32,7 @@
 
     <string name="drawer_item_home">Home</string>
     <string name="drawer_item_complaints">Complaints</string>
+    <string name="drawer_item_Ranking">Complaints Ranking</string>
     <string name="drawer_item_edit_profile">Edit Profile</string>
     <string name="drawer_item_section_header">Section Header</string>
     <string name="drawer_item_settings">Settings</string>

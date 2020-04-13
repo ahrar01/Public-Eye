@@ -44,6 +44,7 @@ import com.qdesigns.publiceye.ui.auth.AuthActivity
 import com.qdesigns.publiceye.ui.auth.SaveUserDetails
 import com.qdesigns.publiceye.ui.complaints.ComplaintsActivity
 import com.qdesigns.publiceye.ui.post_complaint.AddDetails
+import com.qdesigns.publiceye.ui.complaints.PostRanking
 import com.qdesigns.publiceye.ui.quiz.QuizActivity
 import com.qdesigns.publiceye.utils.setProgressDialog
 import com.qdesigns.publiceye.viewmodel.FirestoreViewModel
@@ -188,9 +189,6 @@ class MainActivity : AppCompatActivity() {
             .cameraOnly()
             // Crop Square image
             .crop()
-            .setImageProviderInterceptor { imageProvider -> // Intercept ImageProvider
-                Log.d("ImagePicker", "Selected ImageProvider: " + imageProvider.name)
-            }
             .compress(1024)
             .start(PROFILE_IMAGE_REQ_CODE)
     }
@@ -306,6 +304,8 @@ class MainActivity : AppCompatActivity() {
                     .withIcon(FontAwesome.Icon.faw_user_edit),
                 PrimaryDrawerItem().withName(R.string.drawer_item_complaints)
                     .withIcon(FontAwesome.Icon.faw_clipboard_list).withIdentifier(3),
+                PrimaryDrawerItem().withName(R.string.drawer_item_Ranking)
+                    .withIcon(FontAwesome.Icon.faw_list).withIdentifier(4),
                 //add some more items to get a scrolling list
                 SectionDrawerItem().withName(R.string.drawer_item_section_header),
                 SecondaryDrawerItem().withName(R.string.drawer_item_settings)
@@ -329,6 +329,9 @@ class MainActivity : AppCompatActivity() {
                         Intent(this@MainActivity, SaveUserDetails::class.java)
                     drawerItem.identifier == 3L -> intent =
                         Intent(this@MainActivity, ComplaintsActivity::class.java)
+
+                    drawerItem.identifier == 4L -> intent =
+                        Intent(this@MainActivity, PostRanking::class.java)
 
                     drawerItem.identifier == 10L -> signOut()
 

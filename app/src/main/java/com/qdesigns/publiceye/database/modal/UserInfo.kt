@@ -6,5 +6,6 @@ data class UserInfo(
     var contact: String = "",
     var profilePic: String = "",
     var anonymousName: String = "",
-    var address: String = ""
+    var address: String = "",
+    var numberOfPost: Long = 0
 )
