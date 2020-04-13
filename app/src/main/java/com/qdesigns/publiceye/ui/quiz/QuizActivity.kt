@@ -1,6 +1,7 @@
 package com.qdesigns.publiceye.ui.quiz
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -93,13 +94,24 @@ class QuizActivity : AppCompatActivity() {
         quiz_next_btn.setOnClickListener {
             if (currentQuestion == totalQuestionsToAnswer) {
                 //Load Results
-                // submitResults()
+                submitResults()
             } else {
                 currentQuestion++
                 loadQuestion(currentQuestion)
                 resetOptions()
             }
         }
+    }
+
+    private fun submitResults() {
+        var sendToQuizResult = Intent(this, QuizResult::class.java)
+        sendToQuizResult.putExtra("correct", correctAnswers)
+        sendToQuizResult.putExtra("wrong", wrongAnswers)
+        sendToQuizResult.putExtra("unanswered", notAnswered)
+        sendToQuizResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(sendToQuizResult)
+
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

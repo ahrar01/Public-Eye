@@ -20,21 +20,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.quiz.QuizResult"></activity>
         <activity
             android:name=".ui.quiz.QuizActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.complaints.ComplaintsActivity"
-            android:theme="@style/MaterialTheme"></activity>
+            android:theme="@style/MaterialTheme" />
         <activity
             android:name=".ui.post_complaint.GetLocation"
-            android:theme="@style/MaterialTheme"></activity>
+            android:theme="@style/MaterialTheme" />
         <activity
             android:name=".ui.post_complaint.AddDetails"
             android:theme="@style/MaterialTheme" />
         <activity
             android:name=".ui.auth.SaveUserDetails"
-            android:theme="@style/MaterialTheme"></activity>
+            android:theme="@style/MaterialTheme" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/AppTheme" />

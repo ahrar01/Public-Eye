@@ -67,11 +67,21 @@ class MainActivity : AppCompatActivity() {
     var address = ""
     var anonymousName = ""
     var contact = ""
+    var isCameraOpen = false
+
+    var label = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val dialog = setProgressDialog(this)
         dialog.show()
+        label = getString(R.string.activity_unknown)
+        isCameraOpen = intent.getBooleanExtra("openCamera", false)
+
+        if (isCameraOpen) {
+            pickProfileImage()
+        }
+
         firestoreViewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
 
         getLayout(dialog)
@@ -147,11 +157,29 @@ class MainActivity : AppCompatActivity() {
             .into(profile_pic)
 
         imagePicker.setOnClickListener {
-            // pickProfileImage()
+            if (label.contentEquals("You are in Vehicle")) {
+                Toasty.info(this, "You are in Vehicle").show()
+            } else if (label.contentEquals("You are on Bicycle")) {
+                Toasty.info(this, "You are on Bicycle").show()
+            } else if (label.contentEquals("You are Running")) {
+                Toasty.info(this, "You are Running").show()
+            } else if (label.contentEquals("You are on Foot")) {
+                pickProfileImage()
 
-            startActivity(
-                Intent(this, QuizActivity::class.java)
-            )
+            } else if (label.contentEquals("You are Still")) {
+                pickProfileImage()
+
+            } else if (label.contentEquals("Your phone is Tilted")) {
+                pickProfileImage()
+
+            } else if (label.contentEquals("You are Walking")) {
+                pickProfileImage()
+
+            } else if (label.contentEquals("Unkown Activity")) {
+            } else {
+                pickProfileImage()
+            }
+
         }
     }
 
@@ -176,6 +204,7 @@ class MainActivity : AppCompatActivity() {
             val file = ImagePicker.getFile(data)!!
             when (requestCode) {
                 PROFILE_IMAGE_REQ_CODE -> {
+                    isCameraOpen = false
                     var sendToAddDetails = Intent(this, AddDetails::class.java)
                     sendToAddDetails.putExtra("imageFile", file)
                     sendToAddDetails.putExtra("anonymousName", anonymousName)
@@ -186,32 +215,40 @@ class MainActivity : AppCompatActivity() {
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
         } else {
+            isCameraOpen = false
             Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun handleUserActivity(type: Int, confidence: Int) {
-        var label = getString(R.string.activity_unknown)
 
         when (type) {
             DetectedActivity.IN_VEHICLE -> {
                 label = "You are in Vehicle"
+                startActivity(
+                    Intent(this, QuizActivity::class.java)
+                )
             }
             DetectedActivity.ON_BICYCLE -> {
                 label = "You are on Bicycle"
+                startActivity(
+                    Intent(this, QuizActivity::class.java)
+                )
             }
             DetectedActivity.ON_FOOT -> {
                 label = "You are on Foot"
             }
             DetectedActivity.RUNNING -> {
                 label = "You are Running"
+                startActivity(
+                    Intent(this, QuizActivity::class.java)
+                )
             }
             DetectedActivity.STILL -> {
                 label = "You are Still"
             }
             DetectedActivity.TILTING -> {
                 label = "Your phone is Tilted"
-                pickProfileImage()
             }
             DetectedActivity.WALKING -> {
                 label = "You are Walking"
