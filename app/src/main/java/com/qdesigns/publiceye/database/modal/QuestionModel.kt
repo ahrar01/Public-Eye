@@ -7,5 +7,6 @@ data class QuestionModel(
     var option_b: String? = null,
     var option_c: String? = null,
     var answer: String? = null,
+    var imageURL: String? = null,
     val timer: Long? = null
 )

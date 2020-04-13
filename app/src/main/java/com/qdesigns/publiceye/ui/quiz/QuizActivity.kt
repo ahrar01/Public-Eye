@@ -9,6 +9,9 @@ import android.view.View
 import android.widget.Button
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions.withCrossFade
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -145,6 +148,10 @@ class QuizActivity : AppCompatActivity() {
         quiz_question_number.setText(questNum.toString() + "")
 
         //Load Question Text
+        Glide.with(this).load(questionsToAnswer[questNum - 1].imageURL)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .dontAnimate().into(quiz_image_item)
+
         quiz_question.setText(questionsToAnswer[questNum - 1].question)
 
         //Load Options
