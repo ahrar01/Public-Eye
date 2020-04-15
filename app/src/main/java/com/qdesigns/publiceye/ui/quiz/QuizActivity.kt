@@ -32,7 +32,7 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var allQuestionsList: ArrayList<QuestionModel>
     private val questionsToAnswer: ArrayList<QuestionModel> =
         ArrayList<QuestionModel>()
-    private val totalQuestionsToAnswer = 2
+    private val totalQuestionsToAnswer = 4
     private var countDownTimer: CountDownTimer? = null
 
     private var canAnswer = false
@@ -192,18 +192,18 @@ class QuizActivity : AppCompatActivity() {
         countDownTimer = object : CountDownTimer(timeToAnswer!! * 1000, 10) {
             override fun onTick(millisUntilFinished: Long) {
                 //Update Time
-                quiz_question_time.setText((millisUntilFinished / 1000).toString() + "")
+                quiz_question_time.text = (millisUntilFinished / 1000).toString()
 
                 //Progress in percent
                 val percent = millisUntilFinished / (timeToAnswer!! * 10)
-                quiz_question_progress.setProgress(percent.toInt())
+                quiz_question_progress.progress = percent.toInt()
             }
 
             @RequiresApi(Build.VERSION_CODES.M)
             override fun onFinish() {
                 //Time Up, Cannot Answer Question Anymore
                 canAnswer = false
-                quiz_question_feedback.setText("Time Up! No answer was submitted.")
+                quiz_question_feedback.text = "Time Up! No answer was submitted."
                 quiz_question_feedback.setTextColor(resources.getColor(R.color.colorPrimary, null))
                 notAnswered++
                 showNextBtn()
@@ -263,7 +263,7 @@ class QuizActivity : AppCompatActivity() {
                 )
 
                 //Set Feedback Text
-                quiz_question_feedback.setText("Correct Answer")
+                quiz_question_feedback.text = "Correct Answer"
                 quiz_question_feedback.setTextColor(resources.getColor(R.color.colorPrimary, null))
             } else {
                 //Wrong Answer
@@ -274,11 +274,9 @@ class QuizActivity : AppCompatActivity() {
                 )
 
                 //Set Feedback Text
-                quiz_question_feedback.setText(
-                    """Wrong Answer 
- 
- Correct Answer : ${questionsToAnswer[currentQuestion - 1].answer}"""
-                )
+                quiz_question_feedback.text = """Wrong Answer 
+             
+             Correct Answer : ${questionsToAnswer[currentQuestion - 1].answer}"""
                 quiz_question_feedback.setTextColor(resources.getColor(R.color.colorAccent, null))
             }
             //Set Can answer to false
@@ -295,11 +293,11 @@ class QuizActivity : AppCompatActivity() {
 
     private fun showNextBtn() {
         if (currentQuestion == totalQuestionsToAnswer) {
-            quiz_next_btn.setText("Submit Results")
+            quiz_next_btn.text = "Submit Results"
         }
-        quiz_question_feedback.setVisibility(View.VISIBLE)
-        quiz_next_btn.setVisibility(View.VISIBLE)
-        quiz_next_btn.setEnabled(true)
+        quiz_question_feedback.visibility = View.VISIBLE
+        quiz_next_btn.visibility = View.VISIBLE
+        quiz_next_btn.isEnabled = true
     }
 
 }

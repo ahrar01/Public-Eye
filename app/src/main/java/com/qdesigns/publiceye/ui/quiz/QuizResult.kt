@@ -33,7 +33,7 @@ class QuizResult : AppCompatActivity() {
         results_percent.text = "$percent%"
         results_progress.progress = percent.toInt()
 
-        if (percent > 75) {
+        if (percent >= 70) {
             results_home_btn.text = " Open Camera"
 
         } else {
@@ -41,7 +41,7 @@ class QuizResult : AppCompatActivity() {
         }
 
         results_home_btn.setOnClickListener {
-            if (percent > 75) {
+            if (percent >= 70) {
                 var sendToQuizResult = Intent(this, MainActivity::class.java)
                 sendToQuizResult.putExtra("openCamera", true)
                 sendToQuizResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)

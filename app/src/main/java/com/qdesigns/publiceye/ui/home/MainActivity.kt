@@ -169,6 +169,7 @@ class MainActivity : AppCompatActivity() {
             .into(profile_pic)
 
         imagePicker.setOnClickListener {
+
             if (label.contentEquals("You are in Vehicle")) {
                 Toasty.info(this, "You are in Vehicle").show()
             } else if (label.contentEquals("You are on Bicycle")) {
@@ -223,6 +224,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
+            isCameraOpen = false
             Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
         } else {
             isCameraOpen = false
@@ -235,24 +237,17 @@ class MainActivity : AppCompatActivity() {
         when (type) {
             DetectedActivity.IN_VEHICLE -> {
                 label = "You are in Vehicle"
-                startActivity(
-                    Intent(this, QuizActivity::class.java)
-                )
+
             }
             DetectedActivity.ON_BICYCLE -> {
                 label = "You are on Bicycle"
-                startActivity(
-                    Intent(this, QuizActivity::class.java)
-                )
+
             }
             DetectedActivity.ON_FOOT -> {
                 label = "You are on Foot"
             }
             DetectedActivity.RUNNING -> {
                 label = "You are Running"
-                startActivity(
-                    Intent(this, QuizActivity::class.java)
-                )
             }
             DetectedActivity.STILL -> {
                 label = "You are Still"
@@ -269,6 +264,37 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.e(TAG, "User activity: $label, Confidence: $confidence")
+
+        if (confidence > MainActivity.CONFIDENCE) {
+            if (label.contentEquals("You are in Vehicle")) {
+                startActivity(
+                    Intent(this, QuizActivity::class.java)
+                )
+                Toasty.info(this, "You are in Vehicle").show()
+            } else if (label.contentEquals("You are on Bicycle")) {
+                startActivity(
+                    Intent(this, QuizActivity::class.java)
+                )
+                Toasty.info(this, "You are on Bicycle").show()
+            } else if (label.contentEquals("You are Running")) {
+                startActivity(
+                    Intent(this, QuizActivity::class.java)
+                )
+                Toasty.info(this, "You are Running").show()
+            } else if (label.contentEquals("You are on Foot")) {
+
+            } else if (label.contentEquals("You are Still")) {
+
+            } else if (label.contentEquals("Your phone is Tilted")) {
+                startActivity(
+                    Intent(this, QuizActivity::class.java)
+                )
+                Toasty.info(this, "Your phone is Tilted").show()
+            } else if (label.contentEquals("You are Walking")) {
+
+            } else {
+            }
+        }
 
         if (confidence > MainActivity.CONFIDENCE) {
             main_activity_tv?.text = label
@@ -434,9 +460,9 @@ class MainActivity : AppCompatActivity() {
 
         val BROADCAST_DETECTED_ACTIVITY = "activity_intent"
 
-        internal val DETECTION_INTERVAL_IN_MILLISECONDS: Long = 5000
+        internal val DETECTION_INTERVAL_IN_MILLISECONDS: Long = 4000
 
-        val CONFIDENCE = 70
+        val CONFIDENCE = 65
     }
 
 
