@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import com.google.android.gms.location.ActivityRecognitionClient
 import com.qdesigns.publiceye.ui.home.MainActivity
 
@@ -42,7 +41,7 @@ class BackgroundDetectedActivitiesService : Service() {
     }
 
     fun requestActivityUpdatesButtonHandler() {
-        val task = mActivityRecognitionClient?.requestActivityUpdates(
+        val task = mActivityRecognitionClient.requestActivityUpdates(
             MainActivity.DETECTION_INTERVAL_IN_MILLISECONDS,
             mPendingIntent
         )
@@ -59,7 +58,7 @@ class BackgroundDetectedActivitiesService : Service() {
     }
 
     fun removeActivityUpdatesButtonHandler() {
-        val task = mActivityRecognitionClient?.removeActivityUpdates(
+        val task = mActivityRecognitionClient.removeActivityUpdates(
             mPendingIntent
         )
         task?.addOnSuccessListener {
@@ -78,6 +77,6 @@ class BackgroundDetectedActivitiesService : Service() {
     }
 
     companion object {
-        private val TAG = BackgroundDetectedActivitiesService::class.java?.getSimpleName()
+        private val TAG = BackgroundDetectedActivitiesService::class.java.simpleName
     }
 }

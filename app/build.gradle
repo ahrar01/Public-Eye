@@ -27,6 +27,10 @@ android {
         }
     }
 
+    aaptOptions {
+        noCompress "tflite"  // Your model's file extension: "tflite", "lite", etc.
+    }
+
     androidExtensions {
         experimental = true
     }
@@ -61,6 +65,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
     // FirebaseUI for Cloud Firestore
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
+
+    implementation 'com.google.firebase:firebase-ml-model-interpreter:22.0.3'
 
     //=====================================================================================
     // Room components

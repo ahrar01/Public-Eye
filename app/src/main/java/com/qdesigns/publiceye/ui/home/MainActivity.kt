@@ -28,6 +28,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.firebase.ui.auth.AuthUI
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.DetectedActivity
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
@@ -56,7 +57,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
+
+
     private val TAG = MainActivity::class.java.simpleName
+
+    // [START declare_analytics]
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+    // [END declare_analytics]
+
     private val PROFILE_IMAGE_REQ_CODE = 101
     var firestoreViewModel: FirestoreViewModel? = null
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
@@ -78,6 +86,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // [START shared_app_measurement]
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        // [END shared_app_measurement]
+
         val dialog = setProgressDialog(this)
         dialog.show()
         label = getString(R.string.activity_unknown)
@@ -106,6 +120,7 @@ class MainActivity : AppCompatActivity() {
         startTracking()
 
     }
+
 
 
     private fun getLayout(dialog: Dialog) {
@@ -143,16 +158,16 @@ class MainActivity : AppCompatActivity() {
     private fun setupClickListeners() {
         if (user.email.isNullOrEmpty()) {
             emailViewLL.visibility = View.GONE
-            mobileview.setText(user.phoneNumber)
+            mobileview.text = user.phoneNumber.toString()
             contact = user.phoneNumber.toString()
         } else {
             phone_numberLL.visibility = View.GONE
-            emailview.setText(user.email)
+            emailview.text = user.email.toString()
             contact = user.email.toString()
 
         }
 
-        name_tv.setText(user.displayName)
+        name_tv.text = user.displayName.toString()
 
         val options: RequestOptions = RequestOptions()
             .centerCrop()
@@ -199,7 +214,8 @@ class MainActivity : AppCompatActivity() {
 
     fun pickProfileImage() {
         ImagePicker.with(this)
-            .cameraOnly()
+            // .cameraOnly()
+            // .galleryOnly()
             // Crop Square image
             .crop()
             .compress(1024)
@@ -216,7 +232,7 @@ class MainActivity : AppCompatActivity() {
             when (requestCode) {
                 PROFILE_IMAGE_REQ_CODE -> {
                     isCameraOpen = false
-                    var sendToAddDetails = Intent(this, AddDetails::class.java)
+                    val sendToAddDetails = Intent(this, AddDetails::class.java)
                     sendToAddDetails.putExtra("imageFile", file)
                     sendToAddDetails.putExtra("anonymousName", anonymousName)
 
