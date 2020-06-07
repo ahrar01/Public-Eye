@@ -17,12 +17,18 @@ import kotlinx.android.synthetic.main.activity_add_details.*
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 class AddDetails : AppCompatActivity() {
     private val TAG = "ADD_DETAILS"
 
     lateinit var imageFile: File
     var anonymousName = ""
+
+    var reasonLable = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_details)
@@ -42,6 +48,9 @@ class AddDetails : AppCompatActivity() {
                 sendToAddDetails.putExtra("imageFile", imageFile)
                 sendToAddDetails.putExtra("vehicle_number", vehicle_number)
                 sendToAddDetails.putExtra("anonymousName", anonymousName)
+                sendToAddDetails.putExtra("reasonLable", reasonLable)
+
+
 
 
                 startActivity(sendToAddDetails)
@@ -121,15 +130,24 @@ class AddDetails : AppCompatActivity() {
                     InputStreamReader(assets.open("labels.txt"))
                 )
                 var higherProbablityFloat = 0F
+
                 for (i in probabilities.indices) {
 
                     if (higherProbablityFloat < probabilities[i]) {
                         val label = reader.readLine()
                         higherProbablityFloat = probabilities[i]
-                        Log.d(
-                            TAG,
-                            "The Image is of ${label.substring(2)} , confidance : $higherProbablityFloat"
-                        )
+
+                        if (higherProbablityFloat > .40) {
+
+                            reasonLable = label.substring(2)
+                            Log.d(
+                                TAG,
+                                "The Image is of ${label.substring(2)}, confidance : $higherProbablityFloat"
+                            )
+                        }
+
+
+                        // Log.d(TAG, "The Image is of ${label.substring(2)}, confidance : $higherProbablityFloat")
                     }
                 }
             }
@@ -141,7 +159,7 @@ class AddDetails : AppCompatActivity() {
             }
     }
 
-    fun isFormValid(): Boolean {
+    private fun isFormValid(): Boolean {
         if (vehicle_number_edit_text.text.toString().trim().length == 0) {
             vehicle_number.error = "Enter Vehicle Number"
             return false

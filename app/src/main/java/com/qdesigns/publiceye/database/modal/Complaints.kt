@@ -10,6 +10,7 @@ data class Complaints(
     var anonymousName: String = "",
     var vehicleNumber: String = "",
     var address: String = "",
+    var reasonLable: String = "",
     var submitedDate: Long = 0L,
     var latitude: Double = 0.0,
     var longitude: Double = 0.0

@@ -21,14 +21,14 @@ class FirestoreViewModel(application: Application) : AndroidViewModel(applicatio
     // save User Data to firebase
     fun saveUserData(userInfo: UserInfo) {
         firebaseRepository.saveUserInfo(userInfo).addOnFailureListener {
-            Log.e(TAG, "Failed to save User Data!")
+            Log.e(TAG, "Failed to save User Data! ${it}")
         }
     }
 
     // save User Data to firebase
     fun saveComplaints(complaints: Complaints) {
         firebaseRepository.saveComplainsInfo(complaints).addOnFailureListener {
-            Log.e(TAG, "Failed to save User Data!")
+            Log.e(TAG, "Failed to save User complaint! ${it}")
         }
     }
 

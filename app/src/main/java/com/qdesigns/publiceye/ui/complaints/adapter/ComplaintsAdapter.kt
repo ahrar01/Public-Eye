@@ -58,6 +58,9 @@ open class ComplaintsAdapter(query: Query) :
             itemView.vehicleRegNumber.text =
                 "Vehicle Registration Number: " + complaints.vehicleNumber
 
+            itemView.reason.text =
+                "Reason : " + complaints.reasonLable
+
         }
     }
 }

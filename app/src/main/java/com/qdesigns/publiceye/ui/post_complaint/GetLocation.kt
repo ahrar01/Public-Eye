@@ -49,6 +49,7 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
     }
 
     var numberOfPost: Long = 0
+    var reasonLable = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +57,8 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
         imageFile = intent.extras?.get("imageFile") as File
         vehicleNumber = intent.extras?.get("vehicle_number") as String
         anonymousName = intent.extras?.get("anonymousName") as String
+        reasonLable = intent.extras?.get("reasonLable") as String
+
         gpsUtils = GpsUtils(this)
         firestoreViewModel = ViewModelProvider(this).get(FirestoreViewModel::class.java)
 
@@ -154,6 +157,7 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
                         anonymousName,
                         vehicleNumber,
                         addressNameGet,
+                        reasonLable,
                         currentTimestamp,
                         this!!.latitutde!!,
                         this!!.longitude!!
@@ -165,6 +169,7 @@ class GetLocation : AppCompatActivity(), PermissionCallback {
 
                     firestoreDB.collection("users").document(user.uid)
                         .set(data, SetOptions.merge())
+
                     firestoreViewModel?.saveComplaints(saveComplaint)
                     dialog.dismiss()
                     val intent = Intent(this, MainActivity::class.java).apply {
